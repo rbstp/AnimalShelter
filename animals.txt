@@ -1,0 +1,7 @@
+d1|dog|2|medium sized cream colored female golden retriever weighing about 65 pounds. housebroken.|loves to have her belly rubbed and likes to chase her tail. gives lots of kisses.|lola
+d2|dog|9|large reddish-brown male golden retriever weighing about 85 pounds. housebroken.|loves to have his ears rubbed when he greets you at the door, or at any time! loves to lean-in and give doggy hugs.|loki
+c3|cat|1|small white female weighing about 8 pounds. litter box trained.|friendly|Puss
+c4|cat|?|||
+d5|dog|2|medium sized cream colored female golden retriever weighing about 65 pounds. housebroken.|loves to have her belly rubbed and likes to chase her tail. gives lots of kisses.|lola
+d6|dog|9|large reddish-brown male golden retriever weighing about 85 pounds. housebroken.|loves to have his ears rubbed when he greets you at the door, or at any time! loves to lean-in and give doggy hugs.|loki
+c7|cat|1|small white female weighing about 8 pounds. litter box trained.|friendly|Puss
