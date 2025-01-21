@@ -165,6 +165,7 @@ static void ValidateAnimalData(string[,] animals)
     Console.WriteLine("All animal data requirements are met.");
     Console.WriteLine("Press any key to continue.");
     Console.ReadKey();
+    SaveAnimals(animals);
 }
 
 static void SaveAnimals(string[,] animals)
@@ -444,26 +445,82 @@ static void FindCatsByCharacteristics(string[,] animals)
 static void FindDogsByCharacteristics(string[,] animals)
 {
     Console.Clear();
-    Console.Write("Enter physical characteristics to search for: ");
-    string searchTerm = (Console.ReadLine() ?? "").ToLower();
+    Console.WriteLine("Enter dog characteristics to search for separated by commas");
+    string input = (Console.ReadLine() ?? "").ToLower();
+    string[] searchTerms = [.. input.Split(',')
+                                .Select(term => term.Trim())
+                                .Where(term => !string.IsNullOrEmpty(term))];
 
-    bool found = false;
-    for (int i = 0; i < animals.GetLength(0); i++)
+    // Simple ASCII spinning animation
+    string[] searchingIcons = ["-", "\\", "|", "/"];
+    int iconIndex = 0;
+    
+    // Search animation with countdown
+    int countdown = 3;
+    DateTime startTime = DateTime.Now;
+    while (countdown > 0)
     {
-        if (!string.IsNullOrEmpty(animals[i, 0]) &&
-            animals[i, 1] == "dog" &&
-            animals[i, 3].ToLower().Contains(searchTerm))
+        string searchAnimation = $"\rSearching {searchingIcons[iconIndex]} {string.Join(", ", searchTerms)} / {countdown}";
+        Console.Write(searchAnimation.PadRight(Console.WindowWidth - 1));  // Clear the line
+        iconIndex = (iconIndex + 1) % searchingIcons.Length;
+        
+        if ((DateTime.Now - startTime).TotalSeconds >= 1)
         {
-            DisplayPet(animals, i);
-            found = true;
+            countdown--;
+            startTime = DateTime.Now;
+        }
+        
+        Thread.Sleep(100);
+    }
+    Console.WriteLine();
+
+    // Dictionary to store dogs and their matching terms
+    Dictionary<int, List<string>> matchedDogs = new();
+
+    // Find matches for each search term
+    foreach (string term in searchTerms)
+    {
+        for (int i = 0; i < animals.GetLength(0); i++)
+        {
+            if (!string.IsNullOrEmpty(animals[i, 0]) &&
+                animals[i, 1].ToLower() == "dog" &&
+                animals[i, 3].ToLower().Contains(term))
+            {
+                if (!matchedDogs.ContainsKey(i))
+                {
+                    matchedDogs[i] = new List<string>();
+                }
+                matchedDogs[i].Add(term);
+            }
         }
     }
 
-    if (!found)
-        Console.WriteLine("No dogs found matching those characteristics.");
+    Console.WriteLine();
 
-    Console.WriteLine("\nPress any key to continue.");
-    Console.ReadKey();
+    // Display results
+    if (matchedDogs.Count == 0)
+    {
+        Console.WriteLine("None of our dogs are a match for: " + string.Join(", ", searchTerms));
+    }
+    else
+    {
+        // Show matches and dog details
+        foreach (var dogMatch in matchedDogs)
+        {
+            int index = dogMatch.Key;
+            foreach (string term in dogMatch.Value)
+            {
+                Console.WriteLine($"Our dog Nickname: {animals[index, 5]} matches your search for {term}");
+            }
+            Console.WriteLine($"Nickname: {animals[index, 5]} (ID #: {animals[index, 0]})");
+            Console.WriteLine($"Physical description: {animals[index, 3]}");
+            Console.WriteLine($"Personality: {animals[index, 4]}");
+            Console.WriteLine();
+        }
+    }
+
+    Console.WriteLine("Press the Enter key to continue");
+    Console.ReadLine();
 }
 
 static int FindPetIndex(string[,] animals, string id)
